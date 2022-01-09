@@ -1,6 +1,4 @@
-TODO: Review this README and add or modify as necessary.
-
-## Gandi provider for octoDNS
+## Gandi v4 API provider for octoDNS
 
 An [octoDNS](https://github.com/octodns/octodns/) provider that targets [Gandi](https://docs.gandi.net/en/domain_names/common_operations/dns_records.html).
 
@@ -38,21 +36,20 @@ octodns_gandi==0.0.1
 providers:
   gandi:
     class: octodns_gandi.GandiProvider
-    # TODO
+    # Your API key (required)
+    token: env/GANDI_TOKEN
 ```
 
 ### Support Information
 
 #### Records
 
-TODO: All octoDNS record types are supported.
+GandiProvider suports AAAA, ALIAS, CAA, CNAME, DNAME, MX, NS, PTR, SPF, SRV, SSHFP, and TXT
 
 #### Dynamic
 
-TODO: GandiProvider does not support dynamic records.
+GandiProvider does not support dynamic records.
 
 ### Developement
 
 See the [/script/](/script/) directory for some tools to help with the development process. They generally follow the [Script to rule them all](https://github.com/github/scripts-to-rule-them-all) pattern. Most useful is `./script/bootstrap` which will create a venv and install both the runtime and development related requirements. It will also hook up a pre-commit hook that covers most of what's run by CI.
-
-TODO: any provider specific setup, a docker compose to run things locally etc?

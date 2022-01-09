@@ -1,11 +1,9 @@
-## TODO: v0.0.1 - 20??-??-?? - Moving
+## v0.0.1 - 2022-01-09 - Moving
 
 #### Nothworthy Changes
 
 * Initial extraction of GandiProvider from octoDNS core
 
-TODO: anything else
-
 #### Stuff
 
-TODO: anything else
+Nothing
