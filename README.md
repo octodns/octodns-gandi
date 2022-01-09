@@ -1,4 +1,4 @@
-## Gandi v4 API provider for octoDNS
+## Gandi v5 API provider for octoDNS
 
 An [octoDNS](https://github.com/octodns/octodns/) provider that targets [Gandi](https://docs.gandi.net/en/domain_names/common_operations/dns_records.html).
 
