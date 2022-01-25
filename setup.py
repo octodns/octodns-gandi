@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import find_packages, setup
 
 
 def descriptions():
@@ -25,14 +25,17 @@ setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     name='octodns-gandi',
-    packages=('octodns_gandi',),
+    packages=find_packages(),
     python_requires='>=3.6',
-    install_requires=('octodns>=0.9.14', 'requests>=2.27.0'),
+    install_requires=(
+        'octodns>=0.9.14',
+        'requests>=2.27.0',
+    ),
     url='https://github.com/octodns/octodns-gandi',
     version=version(),
     tests_require=(
-        'nose',
-        'nose-no-network',
+        'pytest',
+        'pytest-network',
         'requests_mock',
     ),
 )
