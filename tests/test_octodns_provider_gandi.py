@@ -189,8 +189,8 @@ class TestGandiProvider(TestCase):
         ]
         plan = provider.plan(self.expected)
 
-        # No root NS, no ignored, no excluded, no LOC
-        n = len(self.expected.records) - 6
+        # No ignored, no excluded, no LOC
+        n = len(self.expected.records) - 5
         self.assertEqual(n, len(plan.changes))
         self.assertEqual(n, provider.apply(plan))
         self.assertFalse(plan.exists)
