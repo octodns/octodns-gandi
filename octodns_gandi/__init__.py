@@ -18,37 +18,31 @@ class GandiClientException(ProviderException):
 
 
 class GandiClientBadRequest(GandiClientException):
-
     def __init__(self, r):
         super(GandiClientBadRequest, self).__init__(r.text)
 
 
 class GandiClientUnauthorized(GandiClientException):
-
     def __init__(self, r):
         super(GandiClientUnauthorized, self).__init__(r.text)
 
 
 class GandiClientForbidden(GandiClientException):
-
     def __init__(self, r):
         super(GandiClientForbidden, self).__init__(r.text)
 
 
 class GandiClientNotFound(GandiClientException):
-
     def __init__(self, r):
         super(GandiClientNotFound, self).__init__(r.text)
 
 
 class GandiClientUnknownDomainName(GandiClientException):
-
     def __init__(self, msg):
         super(GandiClientUnknownDomainName, self).__init__(msg)
 
 
 class GandiClient(object):
-
     def __init__(self, token):
         session = Session()
         session.headers.update({'Authorization': f'Apikey {token}'})
@@ -73,22 +67,28 @@ class GandiClient(object):
         return self._request('GET', f'/livedns/domains/{zone_name}').json()
 
     def zone_create(self, zone_name):
-        return self._request('POST', '/livedns/domains', data={
-            'fqdn': zone_name,
-            'zone': {}
-        }).json()
+        return self._request(
+            'POST', '/livedns/domains', data={'fqdn': zone_name, 'zone': {}}
+        ).json()
 
     def zone_records(self, zone_name):
-        records = self._request('GET',
-                                f'/livedns/domains/{zone_name}/records').json()
+        records = self._request(
+            'GET', f'/livedns/domains/{zone_name}/records'
+        ).json()
 
         for record in records:
             if record['rrset_name'] == '@':
                 record['rrset_name'] = ''
 
             # Change relative targets to absolute ones.
-            if record['rrset_type'] in ['ALIAS', 'CNAME', 'DNAME', 'MX',
-                                        'NS', 'SRV']:
+            if record['rrset_type'] in [
+                'ALIAS',
+                'CNAME',
+                'DNAME',
+                'MX',
+                'NS',
+                'SRV',
+            ]:
                 for i, value in enumerate(record['rrset_values']):
                     if not value.endswith('.'):
                         record['rrset_values'][i] = f'{value}.{zone_name}.'
@@ -96,19 +96,40 @@ class GandiClient(object):
         return records
 
     def record_create(self, zone_name, data):
-        self._request('POST', f'/livedns/domains/{zone_name}/records',
-                      data=data)
+        self._request(
+            'POST', f'/livedns/domains/{zone_name}/records', data=data
+        )
 
     def record_delete(self, zone_name, record_name, record_type):
-        self._request('DELETE', f'/livedns/domains/{zone_name}/records/'
-                      f'{record_name}/{record_type}')
+        self._request(
+            'DELETE',
+            f'/livedns/domains/{zone_name}/records/'
+            f'{record_name}/{record_type}',
+        )
 
 
 class GandiProvider(BaseProvider):
     SUPPORTS_GEO = False
     SUPPORTS_DYNAMIC = False
-    SUPPORTS = set((['A', 'AAAA', 'ALIAS', 'CAA', 'CNAME', 'DNAME',
-                     'MX', 'NS', 'PTR', 'SPF', 'SRV', 'SSHFP', 'TXT']))
+    SUPPORTS = set(
+        (
+            [
+                'A',
+                'AAAA',
+                'ALIAS',
+                'CAA',
+                'CNAME',
+                'DNAME',
+                'MX',
+                'NS',
+                'PTR',
+                'SPF',
+                'SRV',
+                'SSHFP',
+                'TXT',
+            ]
+        )
+    )
 
     def __init__(self, id, token, *args, **kwargs):
         self.log = getLogger(f'GandiProvider[{id}]')
@@ -122,9 +143,11 @@ class GandiProvider(BaseProvider):
         return {
             'ttl': records[0]['rrset_ttl'],
             'type': _type,
-            'values': [v.replace(';', '\\;') for v in
-                       records[0]['rrset_values']] if _type == 'TXT' else
-            records[0]['rrset_values']
+            'values': [
+                v.replace(';', '\\;') for v in records[0]['rrset_values']
+            ]
+            if _type == 'TXT'
+            else records[0]['rrset_values'],
         }
 
     _data_for_A = _data_for_multiple
@@ -137,24 +160,22 @@ class GandiProvider(BaseProvider):
         values = []
         for record in records[0]['rrset_values']:
             flags, tag, value = record.split(' ')
-            values.append({
-                'flags': flags,
-                'tag': tag,
-                # Remove quotes around value.
-                'value': value[1:-1],
-            })
+            values.append(
+                {
+                    'flags': flags,
+                    'tag': tag,
+                    # Remove quotes around value.
+                    'value': value[1:-1],
+                }
+            )
 
-        return {
-            'ttl': records[0]['rrset_ttl'],
-            'type': _type,
-            'values': values
-        }
+        return {'ttl': records[0]['rrset_ttl'], 'type': _type, 'values': values}
 
     def _data_for_single(self, _type, records):
         return {
             'ttl': records[0]['rrset_ttl'],
             'type': _type,
-            'value': records[0]['rrset_values'][0]
+            'value': records[0]['rrset_values'][0],
         }
 
     _data_for_ALIAS = _data_for_single
@@ -166,63 +187,57 @@ class GandiProvider(BaseProvider):
         values = []
         for record in records[0]['rrset_values']:
             priority, server = record.split(' ')
-            values.append({
-                'preference': priority,
-                'exchange': server
-            })
+            values.append({'preference': priority, 'exchange': server})
 
-        return {
-            'ttl': records[0]['rrset_ttl'],
-            'type': _type,
-            'values': values
-        }
+        return {'ttl': records[0]['rrset_ttl'], 'type': _type, 'values': values}
 
     def _data_for_SRV(self, _type, records):
         values = []
         for record in records[0]['rrset_values']:
             priority, weight, port, target = record.split(' ', 3)
-            values.append({
-                'priority': priority,
-                'weight': weight,
-                'port': port,
-                'target': target
-            })
+            values.append(
+                {
+                    'priority': priority,
+                    'weight': weight,
+                    'port': port,
+                    'target': target,
+                }
+            )
 
-        return {
-            'ttl': records[0]['rrset_ttl'],
-            'type': _type,
-            'values': values
-        }
+        return {'ttl': records[0]['rrset_ttl'], 'type': _type, 'values': values}
 
     def _data_for_SSHFP(self, _type, records):
         values = []
         for record in records[0]['rrset_values']:
             algorithm, fingerprint_type, fingerprint = record.split(' ', 2)
-            values.append({
-                'algorithm': algorithm,
-                'fingerprint': fingerprint,
-                'fingerprint_type': fingerprint_type
-            })
+            values.append(
+                {
+                    'algorithm': algorithm,
+                    'fingerprint': fingerprint,
+                    'fingerprint_type': fingerprint_type,
+                }
+            )
 
-        return {
-            'ttl': records[0]['rrset_ttl'],
-            'type': _type,
-            'values': values
-        }
+        return {'ttl': records[0]['rrset_ttl'], 'type': _type, 'values': values}
 
     def zone_records(self, zone):
         if zone.name not in self._zone_records:
             try:
-                self._zone_records[zone.name] = \
-                    self._client.zone_records(zone.name[:-1])
+                self._zone_records[zone.name] = self._client.zone_records(
+                    zone.name[:-1]
+                )
             except GandiClientNotFound:
                 return []
 
         return self._zone_records[zone.name]
 
     def populate(self, zone, target=False, lenient=False):
-        self.log.debug('populate: name=%s, target=%s, lenient=%s', zone.name,
-                       target, lenient)
+        self.log.debug(
+            'populate: name=%s, target=%s, lenient=%s',
+            zone.name,
+            target,
+            lenient,
+        )
 
         values = defaultdict(lambda: defaultdict(list))
         for record in self.zone_records(zone):
@@ -235,13 +250,21 @@ class GandiProvider(BaseProvider):
         for name, types in values.items():
             for _type, records in types.items():
                 data_for = getattr(self, f'_data_for_{_type}')
-                record = Record.new(zone, name, data_for(_type, records),
-                                    source=self, lenient=lenient)
+                record = Record.new(
+                    zone,
+                    name,
+                    data_for(_type, records),
+                    source=self,
+                    lenient=lenient,
+                )
                 zone.add_record(record, lenient=lenient)
 
         exists = zone.name in self._zone_records
-        self.log.info('populate:   found %s records, exists=%s',
-                      len(zone.records) - before, exists)
+        self.log.info(
+            'populate:   found %s records, exists=%s',
+            len(zone.records) - before,
+            exists,
+        )
         return exists
 
     def _record_name(self, name):
@@ -252,9 +275,9 @@ class GandiProvider(BaseProvider):
             'rrset_name': self._record_name(record.name),
             'rrset_ttl': record.ttl,
             'rrset_type': record._type,
-            'rrset_values': [v.replace('\\;', ';') for v in
-                             record.values] if record._type == 'TXT'
-            else record.values
+            'rrset_values': [v.replace('\\;', ';') for v in record.values]
+            if record._type == 'TXT'
+            else record.values,
         }
 
     _params_for_A = _params_for_multiple
@@ -268,8 +291,9 @@ class GandiProvider(BaseProvider):
             'rrset_name': self._record_name(record.name),
             'rrset_ttl': record.ttl,
             'rrset_type': record._type,
-            'rrset_values': [f'{v.flags} {v.tag} "{v.value}"'
-                             for v in record.values]
+            'rrset_values': [
+                f'{v.flags} {v.tag} "{v.value}"' for v in record.values
+            ],
         }
 
     def _params_for_single(self, record):
@@ -277,7 +301,7 @@ class GandiProvider(BaseProvider):
             'rrset_name': self._record_name(record.name),
             'rrset_ttl': record.ttl,
             'rrset_type': record._type,
-            'rrset_values': [record.value]
+            'rrset_values': [record.value],
         }
 
     _params_for_ALIAS = _params_for_single
@@ -290,8 +314,9 @@ class GandiProvider(BaseProvider):
             'rrset_name': self._record_name(record.name),
             'rrset_ttl': record.ttl,
             'rrset_type': record._type,
-            'rrset_values': [f'{v.preference} {v.exchange}'
-                             for v in record.values]
+            'rrset_values': [
+                f'{v.preference} {v.exchange}' for v in record.values
+            ],
         }
 
     def _params_for_SRV(self, record):
@@ -299,8 +324,10 @@ class GandiProvider(BaseProvider):
             'rrset_name': self._record_name(record.name),
             'rrset_ttl': record.ttl,
             'rrset_type': record._type,
-            'rrset_values': [f'{v.priority} {v.weight} {v.port} {v.target}'
-                             for v in record.values]
+            'rrset_values': [
+                f'{v.priority} {v.weight} {v.port} {v.target}'
+                for v in record.values
+            ],
         }
 
     def _params_for_SSHFP(self, record):
@@ -308,8 +335,10 @@ class GandiProvider(BaseProvider):
             'rrset_name': self._record_name(record.name),
             'rrset_ttl': record.ttl,
             'rrset_type': record._type,
-            'rrset_values': [f'{v.algorithm} {v.fingerprint_type} '
-                             f'{v.fingerprint}' for v in record.values]
+            'rrset_values': [
+                f'{v.algorithm} {v.fingerprint_type} ' f'{v.fingerprint}'
+                for v in record.values
+            ],
         }
 
     def _apply_create(self, change):
@@ -324,16 +353,17 @@ class GandiProvider(BaseProvider):
     def _apply_delete(self, change):
         existing = change.existing
         zone = existing.zone
-        self._client.record_delete(zone.name[:-1],
-                                   self._record_name(existing.name),
-                                   existing._type)
+        self._client.record_delete(
+            zone.name[:-1], self._record_name(existing.name), existing._type
+        )
 
     def _apply(self, plan):
         desired = plan.desired
         changes = plan.changes
         zone = desired.name[:-1]
-        self.log.debug('_apply: zone=%s, len(changes)=%d', desired.name,
-                       len(changes))
+        self.log.debug(
+            '_apply: zone=%s, len(changes)=%d', desired.name, len(changes)
+        )
 
         try:
             self._client.zone(zone)
@@ -345,12 +375,14 @@ class GandiProvider(BaseProvider):
             except GandiClientNotFound:
                 # We suppress existing exception before raising
                 # GandiClientUnknownDomainName.
-                e = GandiClientUnknownDomainName('This domain is not '
-                                                 'registered at Gandi. '
-                                                 'Please register or '
-                                                 'transfer it here '
-                                                 'to be able to manage its '
-                                                 'DNS zone.')
+                e = GandiClientUnknownDomainName(
+                    'This domain is not '
+                    'registered at Gandi. '
+                    'Please register or '
+                    'transfer it here '
+                    'to be able to manage its '
+                    'DNS zone.'
+                )
                 e.__cause__ = None
                 raise e
 
