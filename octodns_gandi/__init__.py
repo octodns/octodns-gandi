@@ -19,27 +19,27 @@ class GandiClientException(ProviderException):
 
 class GandiClientBadRequest(GandiClientException):
     def __init__(self, r):
-        super(GandiClientBadRequest, self).__init__(r.text)
+        super().__init__(r.text)
 
 
 class GandiClientUnauthorized(GandiClientException):
     def __init__(self, r):
-        super(GandiClientUnauthorized, self).__init__(r.text)
+        super().__init__(r.text)
 
 
 class GandiClientForbidden(GandiClientException):
     def __init__(self, r):
-        super(GandiClientForbidden, self).__init__(r.text)
+        super().__init__(r.text)
 
 
 class GandiClientNotFound(GandiClientException):
     def __init__(self, r):
-        super(GandiClientNotFound, self).__init__(r.text)
+        super().__init__(r.text)
 
 
 class GandiClientUnknownDomainName(GandiClientException):
     def __init__(self, msg):
-        super(GandiClientUnknownDomainName, self).__init__(msg)
+        super().__init__(msg)
 
 
 class GandiClient(object):
@@ -134,7 +134,7 @@ class GandiProvider(BaseProvider):
     def __init__(self, id, token, *args, **kwargs):
         self.log = getLogger(f'GandiProvider[{id}]')
         self.log.debug('__init__: id=%s, token=***', id)
-        super(GandiProvider, self).__init__(id, *args, **kwargs)
+        super().__init__(id, *args, **kwargs)
         self._client = GandiClient(token)
 
         self._zone_records = {}
