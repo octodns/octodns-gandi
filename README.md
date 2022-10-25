@@ -7,7 +7,7 @@ An [octoDNS](https://github.com/octodns/octodns/) provider that targets [Gandi](
 #### Command line
 
 ```
-pip install octodns_gandi
+pip install octodns-gandi
 ```
 
 #### requirements.txt/setup.py
@@ -19,7 +19,7 @@ Pinning specific versions or SHAs is recommended to avoid unplanned upgrades.
 ```
 # Start with the latest versions and don't just copy what's here
 octodns==0.9.14
-octodns_gandi==0.0.1
+octodns-gandi==0.0.1
 ```
 
 ##### SHAs
