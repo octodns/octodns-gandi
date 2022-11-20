@@ -160,7 +160,7 @@ class TestGandiProvider(TestCase):
         del provider._zone_records[zone.name]
 
     def test_apply(self):
-        provider = GandiProvider('test_id', 'token')
+        provider = GandiProvider('test_id', 'token', strict_supports=False)
 
         # Zone does not exists but can be created.
         with requests_mock() as mock:
