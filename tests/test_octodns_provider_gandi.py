@@ -3,22 +3,24 @@
 #
 
 from os.path import dirname, join
-from requests import HTTPError
-from requests_mock import ANY, mock as requests_mock
 from unittest import TestCase
 from unittest.mock import Mock, call
 
-from octodns.record import Record
+from requests import HTTPError
+from requests_mock import ANY
+from requests_mock import mock as requests_mock
+
 from octodns.provider.yaml import YamlProvider
+from octodns.record import Record
 from octodns.zone import Zone
 
 from octodns_gandi import (
-    GandiProvider,
     GandiClientBadRequest,
-    GandiClientUnauthorized,
     GandiClientForbidden,
     GandiClientNotFound,
+    GandiClientUnauthorized,
     GandiClientUnknownDomainName,
+    GandiProvider,
 )
 
 
@@ -38,7 +40,6 @@ class TestGandiProvider(TestCase):
     )
 
     def test_populate(self):
-
         provider = GandiProvider('test_id', 'token')
 
         # 400 - Bad Request.
