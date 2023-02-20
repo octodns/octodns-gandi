@@ -50,7 +50,7 @@ class GandiClient(object):
         session.headers.update(
             {
                 'Authorization': f'Apikey {token}',
-                'User-Agent': f'octodns/{octodns_version} octodns-edgedns/{__VERSION__}',
+                'User-Agent': f'octodns/{octodns_version} octodns-gandi/{__VERSION__}',
             }
         )
         self._session = session
