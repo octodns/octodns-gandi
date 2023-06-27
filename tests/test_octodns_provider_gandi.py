@@ -239,34 +239,32 @@ class TestGandiProvider(TestCase):
                     'POST',
                     '/livedns/domains/unit.tests/records',
                     data={
-                        'rrset_name': 'www.sub',
+                        'rrset_name': '@',
                         'rrset_ttl': 300,
                         'rrset_type': 'A',
-                        'rrset_values': ['2.2.3.6'],
+                        'rrset_values': ['1.2.3.4', '1.2.3.5'],
                     },
                 ),
                 call(
                     'POST',
                     '/livedns/domains/unit.tests/records',
                     data={
-                        'rrset_name': 'www',
-                        'rrset_ttl': 300,
-                        'rrset_type': 'A',
-                        'rrset_values': ['2.2.3.6'],
+                        'rrset_name': '@',
+                        'rrset_ttl': 3600,
+                        'rrset_type': 'CAA',
+                        'rrset_values': ['0 issue "ca.unit.tests"'],
                     },
                 ),
                 call(
                     'POST',
                     '/livedns/domains/unit.tests/records',
                     data={
-                        'rrset_name': 'txt',
-                        'rrset_ttl': 600,
-                        'rrset_type': 'TXT',
+                        'rrset_name': '@',
+                        'rrset_ttl': 3600,
+                        'rrset_type': 'SSHFP',
                         'rrset_values': [
-                            'Bah bah black sheep',
-                            'have you any wool.',
-                            'v=DKIM1;k=rsa;s=email;h=sha256;p=A/kinda+of/long/string'
-                            '+with+numb3rs',
+                            '1 1 7491973e5f8b39d5327cd4e08bc81b05f7710b49',
+                            '1 1 bf6b6825d2977c511a475bbefb88aad54a92ac73',
                         ],
                     },
                 ),
@@ -274,20 +272,75 @@ class TestGandiProvider(TestCase):
                     'POST',
                     '/livedns/domains/unit.tests/records',
                     data={
-                        'rrset_name': 'spf',
+                        'rrset_name': '_imap._tcp',
                         'rrset_ttl': 600,
-                        'rrset_type': 'SPF',
-                        'rrset_values': ['v=spf1 ip4:192.168.0.1/16-all'],
+                        'rrset_type': 'SRV',
+                        'rrset_values': ['0 0 0 .'],
                     },
                 ),
                 call(
                     'POST',
                     '/livedns/domains/unit.tests/records',
                     data={
-                        'rrset_name': 'ptr',
+                        'rrset_name': '_pop3._tcp',
+                        'rrset_ttl': 600,
+                        'rrset_type': 'SRV',
+                        'rrset_values': ['0 0 0 .'],
+                    },
+                ),
+                call(
+                    'POST',
+                    '/livedns/domains/unit.tests/records',
+                    data={
+                        'rrset_name': '_srv._tcp',
+                        'rrset_ttl': 600,
+                        'rrset_type': 'SRV',
+                        'rrset_values': [
+                            '10 20 30 foo-1.unit.tests.',
+                            '12 20 30 foo-2.unit.tests.',
+                        ],
+                    },
+                ),
+                call(
+                    'POST',
+                    '/livedns/domains/unit.tests/records',
+                    data={
+                        'rrset_name': 'aaaa',
+                        'rrset_ttl': 600,
+                        'rrset_type': 'AAAA',
+                        'rrset_values': [
+                            '2601:644:500:e210:62f8:1dff:feb8:947a'
+                        ],
+                    },
+                ),
+                call(
+                    'POST',
+                    '/livedns/domains/unit.tests/records',
+                    data={
+                        'rrset_name': 'cname',
                         'rrset_ttl': 300,
-                        'rrset_type': 'PTR',
-                        'rrset_values': ['foo.bar.com.'],
+                        'rrset_type': 'CNAME',
+                        'rrset_values': ['unit.tests.'],
+                    },
+                ),
+                call(
+                    'POST',
+                    '/livedns/domains/unit.tests/records',
+                    data={
+                        'rrset_name': 'dname',
+                        'rrset_ttl': 300,
+                        'rrset_type': 'DNAME',
+                        'rrset_values': ['unit.tests.'],
+                    },
+                ),
+                call(
+                    'POST',
+                    '/livedns/domains/unit.tests/records',
+                    data={
+                        'rrset_name': 'excluded',
+                        'rrset_ttl': 3600,
+                        'rrset_type': 'CNAME',
+                        'rrset_values': ['unit.tests.'],
                     },
                 ),
                 call(
@@ -309,41 +362,34 @@ class TestGandiProvider(TestCase):
                     'POST',
                     '/livedns/domains/unit.tests/records',
                     data={
-                        'rrset_name': 'excluded',
-                        'rrset_ttl': 3600,
-                        'rrset_type': 'CNAME',
-                        'rrset_values': ['unit.tests.'],
-                    },
-                ),
-                call(
-                    'POST',
-                    '/livedns/domains/unit.tests/records',
-                    data={
-                        'rrset_name': 'dname',
+                        'rrset_name': 'ptr',
                         'rrset_ttl': 300,
-                        'rrset_type': 'DNAME',
-                        'rrset_values': ['unit.tests.'],
+                        'rrset_type': 'PTR',
+                        'rrset_values': ['foo.bar.com.'],
                     },
                 ),
                 call(
                     'POST',
                     '/livedns/domains/unit.tests/records',
                     data={
-                        'rrset_name': 'cname',
-                        'rrset_ttl': 300,
-                        'rrset_type': 'CNAME',
-                        'rrset_values': ['unit.tests.'],
-                    },
-                ),
-                call(
-                    'POST',
-                    '/livedns/domains/unit.tests/records',
-                    data={
-                        'rrset_name': 'aaaa',
+                        'rrset_name': 'spf',
                         'rrset_ttl': 600,
-                        'rrset_type': 'AAAA',
+                        'rrset_type': 'SPF',
+                        'rrset_values': ['v=spf1 ip4:192.168.0.1/16-all'],
+                    },
+                ),
+                call(
+                    'POST',
+                    '/livedns/domains/unit.tests/records',
+                    data={
+                        'rrset_name': 'txt',
+                        'rrset_ttl': 600,
+                        'rrset_type': 'TXT',
                         'rrset_values': [
-                            '2601:644:500:e210:62f8:1dff:feb8:947a'
+                            'Bah bah black sheep',
+                            'have you any wool.',
+                            'v=DKIM1;k=rsa;s=email;h=sha256;p=A/kinda+of/long/string'
+                            '+with+numb3rs',
                         ],
                     },
                 ),
@@ -351,66 +397,20 @@ class TestGandiProvider(TestCase):
                     'POST',
                     '/livedns/domains/unit.tests/records',
                     data={
-                        'rrset_name': '_srv._tcp',
-                        'rrset_ttl': 600,
-                        'rrset_type': 'SRV',
-                        'rrset_values': [
-                            '10 20 30 foo-1.unit.tests.',
-                            '12 20 30 foo-2.unit.tests.',
-                        ],
-                    },
-                ),
-                call(
-                    'POST',
-                    '/livedns/domains/unit.tests/records',
-                    data={
-                        'rrset_name': '_pop3._tcp',
-                        'rrset_ttl': 600,
-                        'rrset_type': 'SRV',
-                        'rrset_values': ['0 0 0 .'],
-                    },
-                ),
-                call(
-                    'POST',
-                    '/livedns/domains/unit.tests/records',
-                    data={
-                        'rrset_name': '_imap._tcp',
-                        'rrset_ttl': 600,
-                        'rrset_type': 'SRV',
-                        'rrset_values': ['0 0 0 .'],
-                    },
-                ),
-                call(
-                    'POST',
-                    '/livedns/domains/unit.tests/records',
-                    data={
-                        'rrset_name': '@',
-                        'rrset_ttl': 3600,
-                        'rrset_type': 'SSHFP',
-                        'rrset_values': [
-                            '1 1 7491973e5f8b39d5327cd4e08bc81b05f7710b49',
-                            '1 1 bf6b6825d2977c511a475bbefb88aad54a92ac73',
-                        ],
-                    },
-                ),
-                call(
-                    'POST',
-                    '/livedns/domains/unit.tests/records',
-                    data={
-                        'rrset_name': '@',
-                        'rrset_ttl': 3600,
-                        'rrset_type': 'CAA',
-                        'rrset_values': ['0 issue "ca.unit.tests"'],
-                    },
-                ),
-                call(
-                    'POST',
-                    '/livedns/domains/unit.tests/records',
-                    data={
-                        'rrset_name': '@',
+                        'rrset_name': 'www',
                         'rrset_ttl': 300,
                         'rrset_type': 'A',
-                        'rrset_values': ['1.2.3.4', '1.2.3.5'],
+                        'rrset_values': ['2.2.3.6'],
+                    },
+                ),
+                call(
+                    'POST',
+                    '/livedns/domains/unit.tests/records',
+                    data={
+                        'rrset_name': 'www.sub',
+                        'rrset_ttl': 300,
+                        'rrset_type': 'A',
+                        'rrset_values': ['2.2.3.6'],
                     },
                 ),
             ]

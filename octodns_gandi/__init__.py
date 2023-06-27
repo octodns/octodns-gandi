@@ -393,11 +393,6 @@ class GandiProvider(BaseProvider):
                 e.__cause__ = None
                 raise e
 
-        # Force records deletion to be done before creation in order to avoid
-        # "CNAME record must be the only record" error when an existing CNAME
-        # record is replaced by an A/AAAA record.
-        changes.reverse()
-
         for change in changes:
             class_name = change.__class__.__name__
             getattr(self, f'_apply_{class_name.lower()}')(change)
