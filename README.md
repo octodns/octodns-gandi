@@ -36,9 +36,14 @@ octodns-gandi==0.0.1
 providers:
   gandi:
     class: octodns_gandi.GandiProvider
-    # Your API key (required)
+    # Your personal access token (required)
     token: env/GANDI_TOKEN
 ```
+
+The minimum permissions your Personal Access Token must have are
+
+* See and renew domain names
+* Manage domain name technical configurations
 
 ### Support Information
 
