@@ -132,7 +132,7 @@ class TestGandiProvider(TestCase):
 
             zone = Zone('unit.tests.', [])
             provider.populate(zone)
-            self.assertEqual(16, len(zone.records))
+            self.assertEqual(18, len(zone.records))
             changes = self.expected.changes(zone, provider)
             self.assertEqual(0, len(changes))
 
@@ -148,14 +148,14 @@ class TestGandiProvider(TestCase):
 
             zone = Zone('unit.tests.', [])
             provider.populate(zone)
-            self.assertEqual(11, len(zone.records))
+            self.assertEqual(13, len(zone.records))
             changes = self.expected.changes(zone, provider)
-            self.assertEqual(24, len(changes))
+            self.assertEqual(26, len(changes))
 
         # 2nd populate makes no network calls/all from cache
         again = Zone('unit.tests.', [])
         provider.populate(again)
-        self.assertEqual(11, len(again.records))
+        self.assertEqual(13, len(again.records))
 
         # bust the cache
         del provider._zone_records[zone.name]
@@ -265,6 +265,30 @@ class TestGandiProvider(TestCase):
                         'rrset_values': [
                             '1 1 7491973e5f8b39d5327cd4e08bc81b05f7710b49',
                             '1 1 bf6b6825d2977c511a475bbefb88aad54a92ac73',
+                        ],
+                    },
+                ),
+                call(
+                    'POST',
+                    '/livedns/domains/unit.tests/records',
+                    data={
+                        'rrset_name': '_25._tcp.mx1',
+                        'rrset_ttl': 3600,
+                        'rrset_type': 'TLSA',
+                        'rrset_values': [
+                            '3 1 1 8a9a70596e869bed72c69d97a8895dfa'
+                        ],
+                    },
+                ),
+                call(
+                    'POST',
+                    '/livedns/domains/unit.tests/records',
+                    data={
+                        'rrset_name': '_25._tcp.mx2',
+                        'rrset_ttl': 3600,
+                        'rrset_type': 'TLSA',
+                        'rrset_values': [
+                            '3 1 1 c164b2c3f36d068d42a6138e446152f568615f28c69bd96a73e354cac88ed00c'
                         ],
                     },
                 ),
@@ -416,7 +440,7 @@ class TestGandiProvider(TestCase):
             ]
         )
         # expected number of total calls
-        self.assertEqual(19, provider._client._request.call_count)
+        self.assertEqual(21, provider._client._request.call_count)
 
         provider._client._request.reset_mock()
 

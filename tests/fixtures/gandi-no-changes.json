@@ -150,5 +150,23 @@
           "10 20 30 foo-1.unit.tests.",
           "12 20 30 foo-2.unit.tests."
         ]
+      },
+      {
+        "rrset_type": "TLSA",
+        "rrset_ttl": 3600,
+        "rrset_name": "_25._tcp.mx1",
+        "rrset_href": "https://api.gandi.net/v5/livedns/domains/unit.tests/records/_25._tcp.mx1/TLSA",
+        "rrset_values": [
+          "3 1 1 8a9a70596e869bed72c69d97a8895dfa"
+        ]
+      },
+      {
+        "rrset_type": "TLSA",
+        "rrset_ttl": 3600,
+        "rrset_name": "_25._tcp.mx2",
+        "rrset_href": "https://api.gandi.net/v5/livedns/domains/unit.tests/records/_25._tcp.mx2/TLSA",
+        "rrset_values": [
+          "3 1 1 c164b2c3f36d068d42a6138e446152f568615f28c69bd96a73e354cac88ed00c"
+        ]
       }
-    ]
+]
