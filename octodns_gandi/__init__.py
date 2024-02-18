@@ -134,6 +134,7 @@ class GandiProvider(BaseProvider):
                 'SPF',
                 'SRV',
                 'SSHFP',
+                'TLSA',
                 'TXT',
             ]
         )
@@ -223,6 +224,26 @@ class GandiProvider(BaseProvider):
                     'algorithm': algorithm,
                     'fingerprint': fingerprint,
                     'fingerprint_type': fingerprint_type,
+                }
+            )
+
+        return {'ttl': records[0]['rrset_ttl'], 'type': _type, 'values': values}
+
+    def _data_for_TLSA(self, _type, records):
+        values = []
+        for record in records[0]['rrset_values']:
+            (
+                certificate_usage,
+                selector,
+                matching_type,
+                certificate_association_data,
+            ) = record.split(' ', 3)
+            values.append(
+                {
+                    'certificate_usage': certificate_usage,
+                    'selector': selector,
+                    'matching_type': matching_type,
+                    'certificate_association_data': certificate_association_data,
                 }
             )
 
@@ -345,6 +366,17 @@ class GandiProvider(BaseProvider):
             'rrset_type': record._type,
             'rrset_values': [
                 f'{v.algorithm} {v.fingerprint_type} ' f'{v.fingerprint}'
+                for v in record.values
+            ],
+        }
+
+    def _params_for_TLSA(self, record):
+        return {
+            'rrset_name': self._record_name(record.name),
+            'rrset_ttl': record.ttl,
+            'rrset_type': record._type,
+            'rrset_values': [
+                f'{v.certificate_usage} {v.selector} {v.matching_type} {v.certificate_association_data}'
                 for v in record.values
             ],
         }

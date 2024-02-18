@@ -32,6 +32,20 @@
     - flags: 0
       tag: issue
       value: ca.unit.tests
+_25._tcp.mx1:
+  type: TLSA
+  values:
+  - certificate_association_data: 8a9a70596e869bed72c69d97a8895dfa
+    certificate_usage: 3
+    matching_type: 1
+    selector: 1
+_25._tcp.mx2:
+  type: TLSA
+  values:
+  - certificate_association_data: c164b2c3f36d068d42a6138e446152f568615f28c69bd96a73e354cac88ed00c
+    certificate_usage: 3
+    matching_type: 1
+    selector: 1
 _imap._tcp:
   ttl: 600
   type: SRV
