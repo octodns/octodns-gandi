@@ -1,3 +1,7 @@
+## v0.0.3 - 2024-02-19 - TLSA record support
+
+- Add support for TLSA records
+
 ## v0.0.2 - 2023-10-19 - Cya ApiKey, Welcome PAT
 
 - Use Personal Access Token (PAT) authentication instead of ApiKey (deprecated by Gandhi)
