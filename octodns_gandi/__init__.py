@@ -152,11 +152,11 @@ class GandiProvider(BaseProvider):
         return {
             'ttl': records[0]['rrset_ttl'],
             'type': _type,
-            'values': [
-                v.replace(';', '\\;') for v in records[0]['rrset_values']
-            ]
-            if _type == 'TXT'
-            else records[0]['rrset_values'],
+            'values': (
+                [v.replace(';', '\\;') for v in records[0]['rrset_values']]
+                if _type == 'TXT'
+                else records[0]['rrset_values']
+            ),
         }
 
     _data_for_A = _data_for_multiple
@@ -304,9 +304,11 @@ class GandiProvider(BaseProvider):
             'rrset_name': self._record_name(record.name),
             'rrset_ttl': record.ttl,
             'rrset_type': record._type,
-            'rrset_values': [v.replace('\\;', ';') for v in record.values]
-            if record._type == 'TXT'
-            else record.values,
+            'rrset_values': (
+                [v.replace('\\;', ';') for v in record.values]
+                if record._type == 'TXT'
+                else record.values
+            ),
         }
 
     _params_for_A = _params_for_multiple
