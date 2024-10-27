@@ -31,7 +31,7 @@ class TestGandiProvider(TestCase):
 
     # We remove this record from the test zone as Gandi API reject it
     # (rightfully).
-    expected._remove_record(
+    expected.remove_record(
         Record.new(
             expected,
             'sub',
@@ -132,7 +132,7 @@ class TestGandiProvider(TestCase):
 
             zone = Zone('unit.tests.', [])
             provider.populate(zone)
-            self.assertEqual(18, len(zone.records))
+            self.assertEqual(17, len(zone.records))
             changes = self.expected.changes(zone, provider)
             self.assertEqual(0, len(changes))
 
@@ -150,7 +150,7 @@ class TestGandiProvider(TestCase):
             provider.populate(zone)
             self.assertEqual(13, len(zone.records))
             changes = self.expected.changes(zone, provider)
-            self.assertEqual(26, len(changes))
+            self.assertEqual(25, len(changes))
 
         # 2nd populate makes no network calls/all from cache
         again = Zone('unit.tests.', [])
@@ -396,16 +396,6 @@ class TestGandiProvider(TestCase):
                     'POST',
                     '/livedns/domains/unit.tests/records',
                     data={
-                        'rrset_name': 'spf',
-                        'rrset_ttl': 600,
-                        'rrset_type': 'SPF',
-                        'rrset_values': ['v=spf1 ip4:192.168.0.1/16-all'],
-                    },
-                ),
-                call(
-                    'POST',
-                    '/livedns/domains/unit.tests/records',
-                    data={
                         'rrset_name': 'txt',
                         'rrset_ttl': 600,
                         'rrset_type': 'TXT',
@@ -440,7 +430,7 @@ class TestGandiProvider(TestCase):
             ]
         )
         # expected number of total calls
-        self.assertEqual(21, provider._client._request.call_count)
+        self.assertEqual(20, provider._client._request.call_count)
 
         provider._client._request.reset_mock()
 
