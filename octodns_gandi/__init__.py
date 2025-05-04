@@ -131,7 +131,6 @@ class GandiProvider(BaseProvider):
                 'MX',
                 'NS',
                 'PTR',
-                'SPF',
                 'SRV',
                 'SSHFP',
                 'TLSA',
@@ -162,7 +161,6 @@ class GandiProvider(BaseProvider):
     _data_for_A = _data_for_multiple
     _data_for_AAAA = _data_for_multiple
     _data_for_TXT = _data_for_multiple
-    _data_for_SPF = _data_for_multiple
     _data_for_NS = _data_for_multiple
 
     def _data_for_CAA(self, _type, records):
@@ -315,7 +313,6 @@ class GandiProvider(BaseProvider):
     _params_for_AAAA = _params_for_multiple
     _params_for_NS = _params_for_multiple
     _params_for_TXT = _params_for_multiple
-    _params_for_SPF = _params_for_multiple
 
     def _params_for_CAA(self, record):
         return {
