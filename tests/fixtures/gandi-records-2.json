@@ -1,0 +1,38 @@
+[
+  {
+    "rrset_type": "CDS",
+    "rrset_ttl": 10800,
+    "rrset_name": "sub",
+    "rrset_href": "https://api.gandi.net/v5/livedns/domains/unit.tests/records/sub/CDS",
+    "rrset_values": [
+      "32128 13 1 6823D9BB1B03DF714DD0EB163E20B341C96D18C0"
+    ]
+  },
+  {
+    "rrset_type": "CNAME",
+    "rrset_ttl": 10800,
+    "rrset_name": "relative",
+    "rrset_href": "https://api.gandi.net/v5/livedns/domains/unit.tests/records/relative/CNAME",
+    "rrset_values": [
+      "target"
+    ]
+  },
+  {
+    "rrset_type": "TLSA",
+    "rrset_ttl": 10800,
+    "rrset_name": "_25._tcp.mx1",
+    "rrset_href": "https://api.gandi.net/v5/livedns/domains/unit.tests/records/_25._tcp.mx1/TLSA",
+    "rrset_values": [
+      "3 1 1 8a9a70596e869bed72c69d97a8895dfa"
+    ]
+  },
+  {
+    "rrset_type": "TLSA",
+    "rrset_ttl": 10800,
+    "rrset_name": "_25._tcp.mx2",
+    "rrset_href": "https://api.gandi.net/v5/livedns/domains/unit.tests/records/_25._tcp.mx2/TLSA",
+    "rrset_values": [
+      "3 1 1 c164b2c3f36d068d42a6138e446152f568615f28c69bd96a73e354cac88ed00c"
+    ]
+  }
+]

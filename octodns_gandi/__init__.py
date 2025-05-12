@@ -46,7 +46,9 @@ class GandiClientUnknownDomainName(GandiClientException):
 
 
 class GandiClient(object):
-    def __init__(self, token):
+    def __init__(self, token, per_page=500):
+        self.per_page = per_page
+
         session = Session()
         session.headers.update(
             {
@@ -80,26 +82,45 @@ class GandiClient(object):
         ).json()
 
     def zone_records(self, zone_name):
-        records = self._request(
-            'GET', f'/livedns/domains/{zone_name}/records'
-        ).json()
+        records = []
+        page = 1
+        total_records = 1
 
-        for record in records:
-            if record['rrset_name'] == '@':
-                record['rrset_name'] = ''
+        while len(records) < total_records:
+            params = {'page': page, 'per_page': self.per_page}
+            response = self._request(
+                'GET', f'/livedns/domains/{zone_name}/records', params=params
+            )
 
-            # Change relative targets to absolute ones.
-            if record['rrset_type'] in [
-                'ALIAS',
-                'CNAME',
-                'DNAME',
-                'MX',
-                'NS',
-                'SRV',
-            ]:
-                for i, value in enumerate(record['rrset_values']):
-                    if not value.endswith('.'):
-                        record['rrset_values'][i] = f'{value}.{zone_name}.'
+            total_records = int(
+                response.headers.get('total-count', len(records))
+            )
+
+            print(
+                f'page={page}, per_page={self.per_page}, total_records={total_records}'
+            )
+
+            current_records = response.json()
+
+            for record in current_records:
+                if record['rrset_name'] == '@':
+                    record['rrset_name'] = ''
+
+                # Change relative targets to absolute ones.
+                if record['rrset_type'] in [
+                    'ALIAS',
+                    'CNAME',
+                    'DNAME',
+                    'MX',
+                    'NS',
+                    'SRV',
+                ]:
+                    for i, value in enumerate(record['rrset_values']):
+                        if not value.endswith('.'):
+                            record['rrset_values'][i] = f'{value}.{zone_name}.'
+
+            records.extend(current_records)
+            page += 1
 
         return records
 
@@ -139,11 +160,11 @@ class GandiProvider(BaseProvider):
         )
     )
 
-    def __init__(self, id, token, *args, **kwargs):
+    def __init__(self, id, token, per_page=500, *args, **kwargs):
         self.log = getLogger(f'GandiProvider[{id}]')
-        self.log.debug('__init__: id=%s, token=***', id)
+        self.log.debug('__init__: id=%s, token=***, per_page=%d', id, per_page)
         super().__init__(id, *args, **kwargs)
-        self._client = GandiClient(token)
+        self._client = GandiClient(token, per_page=per_page)
 
         self._zone_records = {}
 
