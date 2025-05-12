@@ -80,27 +80,35 @@ class GandiClient(object):
         ).json()
 
     def zone_records(self, zone_name):
-        records = self._request(
-            'GET', f'/livedns/domains/{zone_name}/records'
-        ).json()
-
-        for record in records:
-            if record['rrset_name'] == '@':
-                record['rrset_name'] = ''
-
-            # Change relative targets to absolute ones.
-            if record['rrset_type'] in [
-                'ALIAS',
-                'CNAME',
-                'DNAME',
-                'MX',
-                'NS',
-                'SRV',
-            ]:
-                for i, value in enumerate(record['rrset_values']):
-                    if not value.endswith('.'):
-                        record['rrset_values'][i] = f'{value}.{zone_name}.'
-
+        records = []
+        page = 1
+        page_size = 500
+        
+        while True:
+            params = {'page': page, 'per_page': page_size}
+            response = self._request('GET', f'/livedns/domains/{zone_name}/records', params=params).json()
+            
+            if not response:
+                break
+            
+            for record in response:
+                if record['rrset_name'] == '@':
+                    record['rrset_name'] = ''
+                if record['rrset_type'] in [
+                    'ALIAS',
+                    'CNAME',
+                    'DNAME',
+                    'MX',
+                    'NS',
+                    'SRV',
+                ]:
+                    for i, value in enumerate(record['rrset_values']):
+                        if not value.endswith('.'):
+                            record['rrset_values'][i] = f'{value}.{zone_name}.'
+            
+            records.extend(response)
+            page += 1
+        
         return records
 
     def record_create(self, zone_name, data):
