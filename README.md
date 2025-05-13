@@ -38,6 +38,8 @@ providers:
     class: octodns_gandi.GandiProvider
     # Your personal access token (required)
     token: env/GANDI_TOKEN
+    # The number of records to fetch per-page (optional)
+    #per_page: 500
 ```
 
 The minimum permissions your Personal Access Token must have are

@@ -1,3 +1,8 @@
+## v1.?.0 - 2025-??-?? - Turn the page
+
+* Add support for paginating records and new `per_page` provider option to
+  configure the page size, default is 500
+
 ## v1.0.0 - 2025-05-04 - Long overdue 1.0
 
 Noteworthy Changes:

@@ -2,6 +2,7 @@
 #
 #
 
+from json import loads
 from os.path import dirname, join
 from unittest import TestCase
 from unittest.mock import Mock, call
@@ -40,7 +41,7 @@ class TestGandiProvider(TestCase):
     )
 
     def test_populate(self):
-        provider = GandiProvider('test_id', 'token')
+        provider = GandiProvider('test_id', 'token', per_page=10)
 
         # 400 - Bad Request.
         with requests_mock() as mock:
@@ -140,11 +141,23 @@ class TestGandiProvider(TestCase):
 
         # Default Gandi zone file.
         with requests_mock() as mock:
-            base = (
-                'https://api.gandi.net/v5/livedns/domains/unit.tests' '/records'
+            with open('tests/fixtures/gandi-records-1.json') as fh:
+                text_1 = fh.read()
+            with open('tests/fixtures/gandi-records-2.json') as fh:
+                text_2 = fh.read()
+
+            total_count = len(loads(text_1)) + len(loads(text_2))
+            base = 'https://api.gandi.net/v5/livedns/domains/unit.tests/records'
+            mock.get(
+                f'{base}?page=1&per_page=10',
+                text=text_1,
+                headers={'total-count': str(total_count)},
             )
-            with open('tests/fixtures/gandi-records.json') as fh:
-                mock.get(base, text=fh.read())
+            mock.get(
+                f'{base}?page=2&per_page=10',
+                text=text_2,
+                headers={'total-count': str(total_count)},
+            )
 
             zone = Zone('unit.tests.', [])
             provider.populate(zone)

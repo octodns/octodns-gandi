@@ -46,7 +46,9 @@ class GandiClientUnknownDomainName(GandiClientException):
 
 
 class GandiClient(object):
-    def __init__(self, token):
+    def __init__(self, token, per_page=500):
+        self.per_page = per_page
+
         session = Session()
         session.headers.update(
             {
@@ -82,17 +84,20 @@ class GandiClient(object):
     def zone_records(self, zone_name):
         records = []
         page = 1
-        page_size = 500
         total_records = 1
 
         while len(records) < total_records:
-            params = {'page': page, 'per_page': page_size}
+            params = {'page': page, 'per_page': self.per_page}
             response = self._request(
                 'GET', f'/livedns/domains/{zone_name}/records', params=params
             )
 
             total_records = int(
-                response.headers.get('Total-Count', len(records))
+                response.headers.get('total-count', len(records))
+            )
+
+            print(
+                f'page={page}, per_page={self.per_page}, total_records={total_records}'
             )
 
             current_records = response.json()
@@ -155,11 +160,11 @@ class GandiProvider(BaseProvider):
         )
     )
 
-    def __init__(self, id, token, *args, **kwargs):
+    def __init__(self, id, token, per_page=500, *args, **kwargs):
         self.log = getLogger(f'GandiProvider[{id}]')
-        self.log.debug('__init__: id=%s, token=***', id)
+        self.log.debug('__init__: id=%s, token=***, per_page=%d', id, per_page)
         super().__init__(id, *args, **kwargs)
-        self._client = GandiClient(token)
+        self._client = GandiClient(token, per_page=per_page)
 
         self._zone_records = {}
 
