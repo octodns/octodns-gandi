@@ -84,42 +84,39 @@ class GandiClient(object):
         page = 1
         page_size = 500
         total_records = 1
-        
+
         while len(records) < total_records:
             params = {'page': page, 'per_page': page_size}
-            response = self._request('GET', f'/livedns/domains/{zone_name}/records', params=params)
+            response = self._request(
+                'GET', f'/livedns/domains/{zone_name}/records', params=params
+            )
 
-            if not response.ok:
-                raise Exception(f'Failed to fetch records for {zone_name}. HTTP Status: {response.status_code}')
-            
-            if page == 1:
-                total_records = int(response.headers.get('Total-Count', len(records)))
-            
+            total_records = int(
+                response.headers.get('Total-Count', len(records))
+            )
+
             current_records = response.json()
-            
-            if not current_records:
-                raise Exception(f'Listing records for {zone_name} encountered an error, try again')
-            
+
             for record in current_records:
                 if record['rrset_name'] == '@':
                     record['rrset_name'] = ''
-                
+
                 # Change relative targets to absolute ones.
                 if record['rrset_type'] in [
-                    'ALIAS', 
-                    'CNAME', 
-                    'DNAME', 
-                    'MX', 
-                    'NS', 
-                    'SRV'
+                    'ALIAS',
+                    'CNAME',
+                    'DNAME',
+                    'MX',
+                    'NS',
+                    'SRV',
                 ]:
                     for i, value in enumerate(record['rrset_values']):
                         if not value.endswith('.'):
                             record['rrset_values'][i] = f'{value}.{zone_name}.'
-            
+
             records.extend(current_records)
             page += 1
-        
+
         return records
 
     def record_create(self, zone_name, data):

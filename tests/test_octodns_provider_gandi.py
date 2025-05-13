@@ -207,6 +207,7 @@ class TestGandiProvider(TestCase):
 
         resp = Mock()
         resp.json = Mock()
+        resp.headers = {'Total-Count': '500'}
         provider._client._request = Mock(return_value=resp)
 
         with open('tests/fixtures/gandi-zone.json') as fh:
@@ -228,7 +229,11 @@ class TestGandiProvider(TestCase):
 
         provider._client._request.assert_has_calls(
             [
-                call('GET', '/livedns/domains/unit.tests/records'),
+                call(
+                    'GET',
+                    '/livedns/domains/unit.tests/records',
+                    params={'page': 1, 'per_page': 500},
+                ),
                 call('GET', '/livedns/domains/unit.tests'),
                 call(
                     'POST',
