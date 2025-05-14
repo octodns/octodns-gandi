@@ -96,7 +96,6 @@ class GandiClient(object):
                 response.headers.get('total-count', len(records))
             )
 
-
             current_records = response.json()
 
             for record in current_records:
