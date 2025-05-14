@@ -96,9 +96,6 @@ class GandiClient(object):
                 response.headers.get('total-count', len(records))
             )
 
-            print(
-                f'page={page}, per_page={self.per_page}, total_records={total_records}'
-            )
 
             current_records = response.json()
 
