@@ -183,7 +183,7 @@ class GandiProvider(BaseProvider):
     def _data_for_CAA(self, _type, records):
         values = []
         for record in records[0]['rrset_values']:
-            flags, tag, value = record.split(' ')
+            flags, tag, value = record.split(' ', 2)
             values.append(
                 {
                     'flags': flags,
