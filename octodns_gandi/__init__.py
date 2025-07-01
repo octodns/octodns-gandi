@@ -13,7 +13,7 @@ from octodns.provider.base import BaseProvider
 from octodns.record import Record
 
 # TODO: remove __VERSION__ with the next major version release
-__version__ = __VERSION__ = '1.0.0'
+__version__ = __VERSION__ = '1.1.0'
 
 
 class GandiClientException(ProviderException):
