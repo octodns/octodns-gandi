@@ -1,0 +1,17 @@
+[
+  {
+    "fqdn": "example.com",
+    "domain_href": "https://api.gandi.net/v5/domain/domains/example.com",
+    "domain_records_href": "https://api.gandi.net/v5/livedns/domains/example.com"
+  },
+  {
+    "fqdn": "test.org",
+    "domain_href": "https://api.gandi.net/v5/domain/domains/test.org",
+    "domain_records_href": "https://api.gandi.net/v5/livedns/domains/test.org"
+  },
+  {
+    "fqdn": "unit.tests",
+    "domain_href": "https://api.gandi.net/v5/domain/domains/unit.tests",
+    "domain_records_href": "https://api.gandi.net/v5/livedns/domains/unit.tests"
+  }
+]

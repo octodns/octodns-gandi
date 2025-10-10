@@ -81,6 +81,25 @@ class GandiClient(object):
             'POST', '/livedns/domains', data={'fqdn': zone_name, 'zone': {}}
         ).json()
 
+    def domains(self):
+        domains = []
+        page = 1
+        total_domains = 1
+
+        while len(domains) < total_domains:
+            params = {'page': page, 'per_page': self.per_page}
+            response = self._request('GET', '/livedns/domains', params=params)
+
+            total_domains = int(
+                response.headers.get('total-count', len(domains))
+            )
+
+            current_domains = response.json()
+            domains.extend(current_domains)
+            page += 1
+
+        return domains
+
     def zone_records(self, zone_name):
         records = []
         page = 1
@@ -163,6 +182,7 @@ class GandiProvider(BaseProvider):
         self._client = GandiClient(token, per_page=per_page)
 
         self._zone_records = {}
+        self._domains = None
 
     def _data_for_multiple(self, _type, records):
         return {
@@ -274,6 +294,14 @@ class GandiProvider(BaseProvider):
                 return []
 
         return self._zone_records[zone.name]
+
+    def list_zones(self):
+        self.log.debug('list_zones:')
+        if self._domains is None:
+            self._domains = sorted(
+                f'{d["fqdn"]}.' for d in self._client.domains()
+            )
+        return self._domains
 
     def populate(self, zone, target=False, lenient=False):
         self.log.debug(

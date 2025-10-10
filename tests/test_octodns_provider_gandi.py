@@ -509,3 +509,42 @@ class TestGandiProvider(TestCase):
             ],
             any_order=True,
         )
+
+    def test_list_zones(self):
+        provider = GandiProvider('test_id', 'token', per_page=3)
+
+        # Test with pagination
+        with requests_mock() as mock:
+            with open('tests/fixtures/gandi-domains-1.json') as fh:
+                text_1 = fh.read()
+            with open('tests/fixtures/gandi-domains-2.json') as fh:
+                text_2 = fh.read()
+
+            total_count = len(loads(text_1)) + len(loads(text_2))
+            base = 'https://api.gandi.net/v5/livedns/domains'
+            mock.get(
+                f'{base}?page=1&per_page=3',
+                text=text_1,
+                headers={'total-count': str(total_count)},
+            )
+            mock.get(
+                f'{base}?page=2&per_page=3',
+                text=text_2,
+                headers={'total-count': str(total_count)},
+            )
+
+            zones = provider.list_zones()
+            self.assertEqual(
+                [
+                    'another.net.',
+                    'example.com.',
+                    'example.net.',
+                    'test.org.',
+                    'unit.tests.',
+                ],
+                zones,
+            )
+
+        # Results should be cached
+        cached_zones = provider.list_zones()
+        self.assertEqual(zones, cached_zones)
