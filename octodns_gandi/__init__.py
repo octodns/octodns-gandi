@@ -164,6 +164,7 @@ class GandiProvider(BaseProvider):
                 'CAA',
                 'CNAME',
                 'DNAME',
+                'LOC',
                 'MX',
                 'NS',
                 'PTR',
@@ -279,6 +280,42 @@ class GandiProvider(BaseProvider):
                     'selector': selector,
                     'matching_type': matching_type,
                     'certificate_association_data': certificate_association_data,
+                }
+            )
+
+        return {'ttl': records[0]['rrset_ttl'], 'type': _type, 'values': values}
+
+    def _data_for_LOC(self, _type, records):
+        values = []
+        for record in records[0]['rrset_values']:
+            (
+                lat_degrees,
+                lat_minutes,
+                lat_seconds,
+                lat_direction,
+                long_degrees,
+                long_minutes,
+                long_seconds,
+                long_direction,
+                altitude,
+                size,
+                precision_horz,
+                precision_vert,
+            ) = (record.replace('m', '').split(' ', 11))
+            values.append(
+                {
+                    'lat_degrees': int(lat_degrees),
+                    'lat_minutes': int(lat_minutes),
+                    'lat_seconds': float(lat_seconds),
+                    'lat_direction': lat_direction,
+                    'long_degrees': int(long_degrees),
+                    'long_minutes': int(long_minutes),
+                    'long_seconds': float(long_seconds),
+                    'long_direction': long_direction,
+                    'altitude': float(altitude),
+                    'size': float(size),
+                    'precision_horz': float(precision_horz),
+                    'precision_vert': float(precision_vert),
                 }
             )
 
@@ -421,6 +458,20 @@ class GandiProvider(BaseProvider):
             'rrset_type': record._type,
             'rrset_values': [
                 f'{v.certificate_usage} {v.selector} {v.matching_type} {v.certificate_association_data}'
+                for v in record.values
+            ],
+        }
+
+    def _params_for_LOC(self, record):
+        return {
+            'rrset_name': self._record_name(record.name),
+            'rrset_ttl': record.ttl,
+            'rrset_type': record._type,
+            'rrset_values': [
+                f'{int(v.lat_degrees)} {int(v.lat_minutes)} {float(v.lat_seconds)} {v.lat_direction} '
+                f'{int(v.long_degrees)} {int(v.long_minutes)} {float(v.long_seconds)} {v.long_direction} '
+                f'{float(v.altitude)} '
+                f'{float(v.size)} {float(v.precision_horz)} {float(v.precision_vert)}'
                 for v in record.values
             ],
         }
