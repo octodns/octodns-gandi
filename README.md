@@ -51,7 +51,7 @@ The minimum permissions your Personal Access Token must have are
 
 #### Records
 
-GandiProvider suports AAAA, ALIAS, CAA, CNAME, DNAME, MX, NS, PTR, SPF, SRV, SSHFP, TLSA, and TXT
+GandiProvider suports AAAA, ALIAS, CAA, CNAME, DNAME, LOC, MX, NS, PTR, SPF, SRV, SSHFP, TLSA, and TXT
 
 #### Dynamic
 
