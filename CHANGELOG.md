@@ -1,3 +1,11 @@
+## 1.2.0 - 2026-04-03
+
+Minor:
+* Add list_zones support for dynamic configuration - [#57](https://github.com/octodns/octodns-gandi/pull/57)
+
+Patch:
+* Use new [changelet](https://github.com/octodns/changelet) tooling - [#54](https://github.com/octodns/octodns-gandi/pull/54)
+
 ## v1.1.0 - 2025-07-01 - Turn the page
 
 * Add support for paginating records and new `per_page` provider option to
