@@ -27,7 +27,9 @@ from octodns_gandi import (
 
 class TestGandiProvider(TestCase):
     expected = Zone('unit.tests.', [])
-    source = YamlProvider('test', join(dirname(__file__), 'config'))
+    source = YamlProvider(
+        'test', join(dirname(__file__), 'config'), escaped_semicolons=False
+    )
     source.populate(expected)
 
     # We remove this record from the test zone as Gandi API reject it
